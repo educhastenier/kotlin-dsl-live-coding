@@ -19,15 +19,18 @@ fun html(init: HTML.() -> Unit): HTML {
     return html
 }
 
-abstract class Tag {
+abstract class Tag(name: String) {
+
+    val children = arrayListOf<Tag>()
 
     fun <T : Tag> initTag(tag: T, init: T.() -> Unit): T {
         tag.init()
+        children.add(tag)
         return tag
     }
 }
 
-class HTML: Tag() {
+class HTML: Tag("html") {
 
     fun head(init: Head.() -> Unit): Head {
         val head = Head()
@@ -37,7 +40,7 @@ class HTML: Tag() {
 
 }
 
-class Head: Tag() {
+class Head: Tag("head") {
     fun title(init: Title.() -> Unit): Title {
         val title = Title()
         title.init()
@@ -45,7 +48,7 @@ class Head: Tag() {
     }
 }
 
-class Title: Tag() {
+class Title(name: String): Tag(name) {
 
 }
 
