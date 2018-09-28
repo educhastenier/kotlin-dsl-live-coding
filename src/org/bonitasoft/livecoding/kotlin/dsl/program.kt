@@ -19,15 +19,25 @@ fun html(init: HTML.() -> Unit): HTML {
     return html
 }
 
-class HTML {
-    fun head(init: Head.() -> Unit): Head {
-        val head = Head()
-        head.init()
-        return head
+abstract class Tag {
+
+    fun <T : Tag> initTag(tag: T, init: T.() -> Unit): T {
+        tag.init()
+        return tag
     }
 }
 
-class Head {
+class HTML: Tag() {
+
+    fun head(init: Head.() -> Unit): Head {
+        val head = Head()
+        initTag(head, init)
+        return head
+    }
+
+}
+
+class Head: Tag() {
     fun title(init: Title.() -> Unit): Title {
         val title = Title()
         title.init()
@@ -35,7 +45,7 @@ class Head {
     }
 }
 
-class Title {
+class Title: Tag() {
 
 }
 
