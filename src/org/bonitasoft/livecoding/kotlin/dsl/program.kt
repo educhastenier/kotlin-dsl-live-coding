@@ -6,7 +6,7 @@ fun main(args: Array<String>) {
     val page = html {
         head {
             title {
-                "This is my title"
+                +"This is my title"
             }
         }
     }
@@ -27,7 +27,7 @@ interface Renderable {
 
 abstract class Tag(val name: String) : Renderable {
 
-    val children = arrayListOf<Tag>()
+    val children = arrayListOf<Renderable>()
 
     fun <T : Tag> initTag(tag: T, init: T.() -> Unit): T {
         tag.init()
@@ -38,7 +38,7 @@ abstract class Tag(val name: String) : Renderable {
     override fun render(builder: StringBuilder, indentation: String) {
         builder.append("$indentation<$name>\n")
         for (child in children) {
-            builder.append(child.render(builder, indentation + "  "))
+            child.render(builder, indentation + "  ")
         }
         builder.append("$indentation</$name>\n")
     }
@@ -51,24 +51,26 @@ abstract class Tag(val name: String) : Renderable {
 }
 
 class HTML: Tag("html") {
-
-    fun head(init: Head.() -> Unit): Head {
-        val head = Head()
-        initTag(head, init)
-        return head
-    }
-
+    fun head(init: Head.() -> Unit): Head = initTag(Head(), init)
 }
 
 class Head: Tag("head") {
-    fun title(init: Title.() -> Unit): Title {
-        val title = Title()
-        title.init()
-        return title
+    fun title(init: Title.() -> Unit): Title = initTag(Title(), init)
+}
+
+class TextElement(val text: String) : Renderable {
+    override fun render(builder: StringBuilder, indentation: String) {
+        builder.append("$indentation$text\n")
     }
 }
 
-class Title : Tag("title") {
+abstract class TagWithText(name: String) : Tag(name) {
+    operator fun String.unaryPlus() {
+        children.add(TextElement(this))
+    }
+}
+
+class Title : TagWithText("title") {
 
 }
 
