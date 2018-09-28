@@ -6,9 +6,9 @@ fun callFunctionOnString(maFunction: () -> Unit) = maFunction()
 
 fun main(args: Array<String>) {
 
-    callFunctionOnString({
+    callFunctionOnString {
         println("Live coding")
-    })
+    }
 
 
 }
