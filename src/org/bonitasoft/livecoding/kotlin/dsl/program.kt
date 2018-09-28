@@ -3,13 +3,15 @@ package org.bonitasoft.livecoding.kotlin.dsl
 
 fun main(args: Array<String>) {
 
-    html {
+    val page = html {
         head {
             title {
                 "This is my title"
             }
         }
     }
+
+    println(page)
 
 }
 
@@ -19,7 +21,11 @@ fun html(init: HTML.() -> Unit): HTML {
     return html
 }
 
-abstract class Tag(name: String) {
+interface Renderable {
+    fun render(builder: StringBuilder, indentation: String)
+}
+
+abstract class Tag(val name: String) : Renderable {
 
     val children = arrayListOf<Tag>()
 
@@ -27,6 +33,20 @@ abstract class Tag(name: String) {
         tag.init()
         children.add(tag)
         return tag
+    }
+
+    override fun render(builder: StringBuilder, indentation: String) {
+        builder.append("$indentation<$name>\n")
+        for (child in children) {
+            builder.append(child.render(builder, indentation + "  "))
+        }
+        builder.append("$indentation</$name>\n")
+    }
+
+    override fun toString(): String {
+        val builder = StringBuilder()
+        render(builder, "")
+        return builder.toString()
     }
 }
 
@@ -48,7 +68,7 @@ class Head: Tag("head") {
     }
 }
 
-class Title(name: String): Tag(name) {
+class Title : Tag("title") {
 
 }
 
