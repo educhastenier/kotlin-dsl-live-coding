@@ -4,7 +4,11 @@ package org.bonitasoft.livecoding.kotlin.dsl
 fun main(args: Array<String>) {
 
     html {
-        head { }
+        head {
+            title {
+                "This is my title"
+            }
+        }
     }
 
 }
@@ -16,12 +20,22 @@ fun html(init: HTML.() -> Unit): HTML {
 }
 
 class HTML {
-    fun head(init: () -> Unit): Head {
-
+    fun head(init: Head.() -> Unit): Head {
+        val head = Head()
+        head.init()
+        return head
     }
 }
 
 class Head {
+    fun title(init: Title.() -> Unit): Title {
+        val title = Title()
+        title.init()
+        return title
+    }
+}
+
+class Title {
 
 }
 
