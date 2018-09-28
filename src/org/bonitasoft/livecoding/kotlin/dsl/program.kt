@@ -1,14 +1,15 @@
 package org.bonitasoft.livecoding.kotlin.dsl
 
 
-fun callFunctionOnString(message: String, maFunction: (msg: String) -> Unit) {
-    maFunction(message)
-}
+fun callFunctionOnString(maFunction: () -> Unit) = maFunction()
 
 
 fun main(args: Array<String>) {
 
-    callFunctionOnString("Live Coding", { s -> println("malambda: $s") })
+    callFunctionOnString({
+        println("Live coding")
+    })
+
 
 }
 
